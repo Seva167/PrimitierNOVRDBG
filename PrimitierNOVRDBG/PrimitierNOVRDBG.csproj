@@ -10,44 +10,44 @@
 
   <ItemGroup>
     <Reference Include="MelonLoader">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\net6\MelonLoader.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\net6\MelonLoader.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Unity.InputSystem">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\Unity.InputSystem.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\Unity.InputSystem.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>$(PRIMITIER_DIR)\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="move $(OutDir)$(AssemblyName).dll C:\Users\User\Documents\Seva\desktop\primitierStuff\Primitier\Mods\" />
+    <Exec Command="move $(OutDir)$(AssemblyName).dll $(PRIMITIER_DIR)\Mods\" />
   </Target>
 </Project>
