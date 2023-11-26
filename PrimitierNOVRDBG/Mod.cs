@@ -181,8 +181,10 @@ namespace PrimitierNOVRDBG
                 initDone = Init();
                 return;
             }
+
             UpdatePlayerMovement();
             UpdateHandMovement();
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 hideMouse = !hideMouse;
@@ -193,6 +195,7 @@ namespace PrimitierNOVRDBG
 
         public static bool god = false;
         bool ultraGrab = false;
+
         public override void OnGUI()
         {
             god = GUI.Toggle(new Rect(10f, 100f, 300f, 20f), god, "Godmode");
