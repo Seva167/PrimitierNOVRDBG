@@ -14,6 +14,7 @@ namespace PrimitierNOVRDBG
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             GameObject.Find("CameraBody").SetActive(false);
+            GameObject.Find("TitleSpace").transform.Find("TitleMenu").gameObject.SetActive(true);
         }
 
         bool Init()
@@ -22,7 +23,6 @@ namespace PrimitierNOVRDBG
             {
                 origin = GameObject.Find("XR Origin");
                 origin.GetComponent<Rigidbody>().isKinematic = true;
-                life = origin.GetComponent<PlayerLife>();
 
                 var piam = origin.GetComponent<PlayerInput>().actions.actionMaps[0];
 
@@ -117,19 +117,10 @@ namespace PrimitierNOVRDBG
         }
 
         bool loaded = false;
-        bool god = false;
-        PlayerLife life;
+        public static bool god = false;
         public override void OnGUI()
         {
-            if (!loaded && GUI.Button(new Rect(10f, 50f, 500f, 50f), "Load Save2"))
-            {
-                GameObject.Find("TitleSpace").transform.Find("TitleMenu/LoadButtons/LoadButton_2").GetComponent<StartButton>().OnPress();
-                loaded = true;
-            }
-
             god = GUI.Toggle(new Rect(10f, 100f, 300f, 50f), god, "Godmode");
-            if (life != null && god)
-                life.Recover(90000f);
         }
     }
 }
