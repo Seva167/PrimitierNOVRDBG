@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using Il2Cpp;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace PrimitierNOVRDBG
 {
@@ -15,6 +16,10 @@ namespace PrimitierNOVRDBG
         {
             GameObject.Find("CameraBody").SetActive(false);
             GameObject.Find("TitleSpace").transform.Find("TitleMenu").gameObject.SetActive(true);
+            foreach (var canvas in GameObject.FindObjectsOfType<Canvas>(true))
+            {
+                canvas.gameObject.AddComponent<GraphicRaycaster>();
+            }
         }
 
         bool Init()
@@ -101,7 +106,7 @@ namespace PrimitierNOVRDBG
 
             origin.transform.localPosition += (fwd * Input.GetAxis("Vertical") + rgt * Input.GetAxis("Horizontal")) * mlt;
 
-            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)))
+            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)) && hideMouse)
                 origin.transform.rotation = Quaternion.Euler(0f, Input.GetAxis("Mouse X") + origin.transform.rotation.eulerAngles.y, 0f);
 
             if (Input.GetKey(KeyCode.Space))
@@ -109,7 +114,7 @@ namespace PrimitierNOVRDBG
             else if (Input.GetKey(KeyCode.LeftControl))
                 origin.transform.localPosition -= Vector3.up * mlt;
 
-            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)))
+            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)) && hideMouse)
                 head.transform.localRotation = Quaternion.Euler(-Input.GetAxis("Mouse Y") + head.transform.localRotation.eulerAngles.x, 0f, 0f);
         }
 
@@ -167,6 +172,8 @@ namespace PrimitierNOVRDBG
         }
 
         bool initDone = false;
+        bool hideMouse = false;
+
         public override void OnUpdate()
         {
             if (!initDone)
@@ -176,6 +183,12 @@ namespace PrimitierNOVRDBG
             }
             UpdatePlayerMovement();
             UpdateHandMovement();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                hideMouse = !hideMouse;
+                Cursor.lockState = hideMouse ? CursorLockMode.Locked : CursorLockMode.None;
+                Cursor.visible = !hideMouse;
+            }
         }
 
         public static bool god = false;
