@@ -51,14 +51,32 @@ namespace PrimitierNOVRDBG
                 head.transform.localPosition = new Vector3(0f, 1.8f, 0f);
                 return false;
             }
-            if (leftHand == null)
+            if (leftHandCtrl == null)
             {
-                leftHand = GameObject.Find("LeftHand Controller");
+                leftHandCtrl = GameObject.Find("LeftHand Controller");
+                leftHand = GameObject.Find("LeftHand").GetComponent<Grabber>();
+                
+                var hand = leftHand.GetComponent<Hand>();
+                hand.maximumForce = float.PositiveInfinity;
+                hand.maximumTorque = float.PositiveInfinity;
+
+                hand.positionSpring = 1000000f;
+                hand.rotationSpring = 1000000f;
+
                 return false;
             }
-            if (rightHand == null)
+            if (rightHandCtrl == null)
             {
-                rightHand = GameObject.Find("RightHand Controller");
+                rightHandCtrl = GameObject.Find("RightHand Controller");
+                rightHand = GameObject.Find("RightHand").GetComponent<Grabber>();
+
+                var hand = rightHand.GetComponent<Hand>();
+                hand.maximumForce = float.PositiveInfinity;
+                hand.maximumTorque = float.PositiveInfinity;
+
+                hand.positionSpring = 1000000f;
+                hand.rotationSpring = 1000000f;
+
                 return false;
             }
 
@@ -82,26 +100,70 @@ namespace PrimitierNOVRDBG
                 mlt = 0.1f;
 
             origin.transform.localPosition += (fwd * Input.GetAxis("Vertical") + rgt * Input.GetAxis("Horizontal")) * mlt;
-            origin.transform.rotation = Quaternion.Euler(0f, Input.GetAxis("Mouse X") + origin.transform.rotation.eulerAngles.y, 0f);
+
+            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)))
+                origin.transform.rotation = Quaternion.Euler(0f, Input.GetAxis("Mouse X") + origin.transform.rotation.eulerAngles.y, 0f);
 
             if (Input.GetKey(KeyCode.Space))
                 origin.transform.localPosition += Vector3.up * mlt;
             else if (Input.GetKey(KeyCode.LeftControl))
                 origin.transform.localPosition -= Vector3.up * mlt;
 
-            head.transform.localRotation = Quaternion.Euler(-Input.GetAxis("Mouse Y") + head.transform.localRotation.eulerAngles.x, 0f, 0f);
+            if (!(Input.GetMouseButton(0) || Input.GetMouseButton(1)))
+                head.transform.localRotation = Quaternion.Euler(-Input.GetAxis("Mouse Y") + head.transform.localRotation.eulerAngles.x, 0f, 0f);
         }
 
-        GameObject leftHand;
-        GameObject rightHand;
+        GameObject leftHandCtrl;
+        GameObject rightHandCtrl;
+
+        Grabber leftHand;
+        Grabber rightHand;
+
+        Vector3 leftHandMove = new(-0.1f, -0.2f, 0.15f);
+        Vector3 leftHandRot = new(270f, 0f, 0f);
+
+        Vector3 rightHandMove = new(0.1f, -0.2f, 0.15f);
+        Vector3 rightHandRot = new(270f, 0f, 0f);
 
         void UpdateHandMovement()
         {
-            leftHand.transform.position = head.transform.TransformPoint(new Vector3(-0.1f, -0.2f, 0.15f));
-            leftHand.transform.rotation = head.transform.rotation * Quaternion.Euler(270f, 0f, 0f);
+            leftHandCtrl.transform.position = head.transform.TransformPoint(leftHandMove);
+            leftHandCtrl.transform.rotation = head.transform.rotation * Quaternion.Euler(leftHandRot);
 
-            rightHand.transform.position = head.transform.TransformPoint(new Vector3(0.1f, -0.2f, 0.15f));
-            rightHand.transform.rotation = head.transform.rotation * Quaternion.Euler(270f, 0f, 0f);
+            if (Input.GetMouseButton(0))
+            {
+                if (Input.GetMouseButton(2))
+                {
+                    leftHandRot += new Vector3(Input.GetAxis("Mouse Y"), -Input.GetAxis("Mouse X"));
+                    return;
+                }
+
+                leftHandMove += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.mouseScrollDelta.y) * 0.05f;
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad7))
+            {
+                leftHandMove = new Vector3(-0.1f, -0.2f, 0.15f);
+                leftHandRot = new Vector3(270f, 0f, 0f);
+            }
+
+            rightHandCtrl.transform.position = head.transform.TransformPoint(rightHandMove);
+            rightHandCtrl.transform.rotation = head.transform.rotation * Quaternion.Euler(rightHandRot);
+
+            if (Input.GetMouseButton(1))
+            {
+                if (Input.GetMouseButton(2))
+                {
+                    rightHandRot += new Vector3(Input.GetAxis("Mouse Y"), -Input.GetAxis("Mouse X"));
+                    return;
+                }
+
+                rightHandMove += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.mouseScrollDelta.y) * 0.05f;
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad8))
+            {
+                rightHandMove = new Vector3(0.1f, -0.2f, 0.15f);
+                rightHandRot = new Vector3(270f, 0f, 0f);
+            }
         }
 
         bool initDone = false;
@@ -116,11 +178,25 @@ namespace PrimitierNOVRDBG
             UpdateHandMovement();
         }
 
-        bool loaded = false;
         public static bool god = false;
+        bool ultraGrab = false;
         public override void OnGUI()
         {
-            god = GUI.Toggle(new Rect(10f, 100f, 300f, 50f), god, "Godmode");
+            god = GUI.Toggle(new Rect(10f, 100f, 300f, 20f), god, "Godmode");
+            ultraGrab = GUI.Toggle(new Rect(10f, 120f, 300f, 20f), ultraGrab, "ULTRA Grab");
+            if (ultraGrab)
+            {
+                if (leftHand.joint != null)
+                    leftHand.joint.connectedMassScale = 1000000f;
+                if (rightHand.joint != null)
+                    rightHand.joint.connectedMassScale = 1000000f;
+
+                Grabber.releaseDistance = float.PositiveInfinity;
+            }
+            else
+            {
+                Grabber.releaseDistance = 1.8f;
+            }
         }
     }
 }
